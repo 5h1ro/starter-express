@@ -22,6 +22,12 @@ let userSchema = mongoose.Schema(
       type: String,
       require: [true, "Nomor telepon harus diisi"],
     },
+
+    roleId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Roles",
+      require: [true, "Id role harus dimasukkan"],
+    },
   },
   { timestamp: true }
 );

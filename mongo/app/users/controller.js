@@ -5,7 +5,15 @@ const bcrypt = require("bcrypt");
 module.exports = {
   index: async (req, res) => {
     try {
-      const users = await UsersDB.find().sort({ timestamp: -1 });
+      const users = await UsersDB.find()
+        .sort({ timestamp: -1 })
+        .populate("roleId", { _id: 1, name: 1 })
+        .select({
+          _id: 1,
+          email: 1,
+          name: 1,
+          phoneNumber: 1,
+        });
       if (users.length === 0) {
         return res.send({
           success: false,
@@ -28,7 +36,14 @@ module.exports = {
   detail: async (req, res) => {
     let id = req.params.id;
     try {
-      const user = await UsersDB.findOne({ _id: id });
+      const user = await UsersDB.findOne({ _id: id })
+        .populate("roleId", { _id: 1, name: 1 })
+        .select({
+          _id: 1,
+          email: 1,
+          name: 1,
+          phoneNumber: 1,
+        });
       if (!user) {
         return res.send({
           success: false,
@@ -47,6 +62,7 @@ module.exports = {
       });
     }
   },
+
   create: async (req, res) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
@@ -63,6 +79,7 @@ module.exports = {
     const payload = {
       ...req.body,
       password,
+      roleId: "639032d1c154dc55cee535da",
     };
     try {
       const userSaved = new UsersDB(payload);
